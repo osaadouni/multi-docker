@@ -1,0 +1,17 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t raptivistos/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true raptivistos/react-test npm test -- --coverage 
+
+after_success:
+  - docker build -t raptivistos/multi-client ./client
+  - docker build -t raptivistos/multi-nginx ./nginx
+  - docker build -t raptivistos/multi-server ./server
+  - docker build -t raptivistos/multi-worker ./worker
+
